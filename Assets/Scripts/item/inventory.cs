@@ -101,11 +101,7 @@ public class inventory : MonoBehaviour
         if (inventorys[slotIndex] != null)
         {
             Debug.Log($"Slot {slotIndex + 1}의 {inventorys[slotIndex]}을(를) 사용합니다.");
-            if (spawnedItems[slotIndex] != null)
-            {
-                Destroy(spawnedItems[slotIndex]);
-                spawnedItems[slotIndex] = null; // Clear the reference
-            }
+            
                // itemtype이 "1"일 때 Note를 삭제하는 이벤트 호출
             if (inventorys[slotIndex] == "1")
             {
@@ -196,7 +192,11 @@ public class inventory : MonoBehaviour
 
         
 
-
+            if (spawnedItems[slotIndex] != null)
+            {
+                Destroy(spawnedItems[slotIndex]);
+                spawnedItems[slotIndex] = null; // Clear the reference
+            }
             inventorys[slotIndex] = null;
         }
         else

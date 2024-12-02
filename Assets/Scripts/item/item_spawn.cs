@@ -28,7 +28,7 @@ public class item_spawn : MonoBehaviour
                 
                 spawnitem(k,arrPosY[0]);
                 k++;
-                if(k==6)
+                if(k==items.Length)
                     k=0;
                 yield return new WaitForSeconds(spawnTime);
                 continue;
