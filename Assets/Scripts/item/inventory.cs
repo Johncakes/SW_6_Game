@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class inventory : MonoBehaviour
 {
@@ -28,6 +29,9 @@ public class inventory : MonoBehaviour
     public PlayerAnimationEnum state;
     private bool currentClone;
     //private Clone clone;
+    private bool wait;
+    List<bool> bools = new List<bool>(){false,false,false};
+    //public Action<int> onInvoke;
 
     void Awake()
     {
@@ -46,7 +50,6 @@ public class inventory : MonoBehaviour
         // clone=cloneObject.GetComponent<Clone>();
         //Clone CL = FindObjectOfType<Clone>();
         //CL.isDeleted=true;
-
        
 
 
@@ -100,7 +103,8 @@ public class inventory : MonoBehaviour
     // 지정된 슬롯의 아이템 사용
     private void UseItem(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= inventorySize || currentClone)
+        wait=false;
+        if (slotIndex < 0 || slotIndex >= inventorySize || currentClone || bools[slotIndex])
         {
             Debug.Log("잘못된 슬롯입니다.");
             return;
@@ -108,12 +112,7 @@ public class inventory : MonoBehaviour
 
         if (inventorys[slotIndex] != null)
         {
-            Debug.Log($"Slot {slotIndex + 1}의 {inventorys[slotIndex]}을(를) 사용합니다.");
-            if (spawnedItems[slotIndex] != null)
-            {
-                Destroy(spawnedItems[slotIndex]);
-                spawnedItems[slotIndex] = null; // Clear the reference
-            }
+            
             // itemtype이 "1"일 때 Note를 삭제하는 이벤트 호출
             if (inventorys[slotIndex] == "1")
             {
@@ -134,6 +133,8 @@ public class inventory : MonoBehaviour
                 if (slow != null)
                 {
                     slow.SlowNotes();
+                    wait=true;
+                    bools[slotIndex]=true;
                     Invoke("stopslow", 5f);
                 }
                 else
@@ -147,7 +148,9 @@ public class inventory : MonoBehaviour
                 if (AC != null)
                 {
                     AC.sameColor();
-                    Invoke("difColor", 10f);
+                    wait=true;
+                    bools[slotIndex]=true;
+                    Invoke("difColor", 5f);
                 }
                 else
                 {
@@ -161,7 +164,9 @@ public class inventory : MonoBehaviour
                 {
                     DU.damageUp();
                     PlayPowerupSound();
-                    Invoke("damagedown", 4f);
+                    wait=true;
+                    bools[slotIndex]=true;
+                    Invoke("damagedown", 5f);
                 }
                 else
                 {
@@ -211,7 +216,8 @@ public class inventory : MonoBehaviour
                 CloneAnime3 CA3=FindObjectOfType<CloneAnime3>();
                 CA3.ChangeOriginColor(state);
                 
-
+                wait=true;
+                bools[slotIndex]=true;
                 //PlayerElement PE= FindObjectOfType<PlayerElement>();
                 //PE.isClone=true;
                 Invoke("clonefin", 5f);
@@ -220,8 +226,24 @@ public class inventory : MonoBehaviour
 
 
 
+            Debug.Log($"Slot {slotIndex + 1}의 {inventorys[slotIndex]}을(를) 사용합니다.");
+            if (spawnedItems[slotIndex] != null)
+            {
+                if(wait){
+                   // ItemDisappear ID =FindObjectOfType<ItemDisappear>();
+                    //ID.isDis=true;
+                     StartCoroutine(InvokeWithParameter(slotIndex, 5f));
 
-            inventorys[slotIndex] = null;
+                }
+                else{
+                    Destroy(spawnedItems[slotIndex]);
+                    spawnedItems[slotIndex] = null; // Clear the reference
+                    inventorys[slotIndex] = null;
+                }
+                 
+            }
+
+            
         }
         else
         {
@@ -267,7 +289,7 @@ public class inventory : MonoBehaviour
             ANIR.isClone = false;
             CloneAttack CA = FindObjectOfType<CloneAttack>();
             CA.isClone = false;
-            PlayerElement PE= FindObjectOfType<PlayerElement>();
+            //PlayerElement PE= FindObjectOfType<PlayerElement>();
             //PE.fuck();
 
             //Clone CL = FindObjectOfType<Clone>();
@@ -298,7 +320,23 @@ public class inventory : MonoBehaviour
         
 
     }
+    
+    System.Collections.IEnumerator InvokeWithParameter(int number, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        fade(number);
+    }
 
+    void fade(int slotIndex){
+        ItemDisappear ID =FindObjectOfType<ItemDisappear>();
+        ID.isDis=true;
+        Destroy(spawnedItems[slotIndex]);
+        spawnedItems[slotIndex] = null; // Clear the reference
+        inventorys[slotIndex] = null;
+        wait=false;
+        bools[slotIndex]=false;
+        
+    }
 
     public void PlayBombSound()
     {
