@@ -9,9 +9,15 @@ public class ItemDisappear : MonoBehaviour
     private float elapsedTime = 0f;
 
     public bool isDis;
+    private void Awake() {
+        
+    }
     void Start()
     {
         material = GetComponent<Renderer>().material;
+    }
+    public void changeBool(){
+        isDis=true;
     }
 
     void Update()

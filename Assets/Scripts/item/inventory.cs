@@ -16,8 +16,9 @@ public class inventory : MonoBehaviour
     private int inventorySize = 3;
     private float[] arrPosX = { -4.1f, -3f, -1.9f };
     private List<GameObject> spawnedItems = new List<GameObject>();
-
- 
+    
+    [SerializeField]
+    private GameObject[] inventoryMini;
 
     public StopSlow ST;
     public DamageDown DD;
@@ -95,7 +96,7 @@ public class inventory : MonoBehaviour
 
     void spawnitem(int index, float posX, int slotIndex)
     {
-        Vector3 spawnPos = new Vector3(posX, transform.position.y, transform.position.z - 1f);
+        Vector3 spawnPos = new Vector3(posX, transform.position.y, transform.position.z - 0.1f);
 
         GameObject newItem = Instantiate(itemsMini[index], spawnPos, Quaternion.identity);
         spawnedItems[slotIndex] = newItem;
@@ -104,7 +105,7 @@ public class inventory : MonoBehaviour
     private void UseItem(int slotIndex)
     {
         wait=false;
-        if (slotIndex < 0 || slotIndex >= inventorySize || currentClone || bools[slotIndex])
+        if (slotIndex < 0 || slotIndex >= inventorySize || (currentClone && bools[slotIndex]))
         {
             Debug.Log("잘못된 슬롯입니다.");
             return;
@@ -230,6 +231,8 @@ public class inventory : MonoBehaviour
             if (spawnedItems[slotIndex] != null)
             {
                 if(wait){
+                    ConnectInv CI=inventoryMini[slotIndex].GetComponent<ConnectInv>();
+                    CI.findItem();
                    // ItemDisappear ID =FindObjectOfType<ItemDisappear>();
                     //ID.isDis=true;
                      StartCoroutine(InvokeWithParameter(slotIndex, 5f));
@@ -328,8 +331,8 @@ public class inventory : MonoBehaviour
     }
 
     void fade(int slotIndex){
-        ItemDisappear ID =FindObjectOfType<ItemDisappear>();
-        ID.isDis=true;
+       // ItemDisappear ID =FindObjectOfType<ItemDisappear>();
+        //ID.isDis=false;
         Destroy(spawnedItems[slotIndex]);
         spawnedItems[slotIndex] = null; // Clear the reference
         inventorys[slotIndex] = null;

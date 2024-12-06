@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6803014686991899995}
   m_Layer: 0
   m_Name: item6 mini
-  m_TagString: Untagged
+  m_TagString: ItemMini
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,10 +92,10 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7047249298611479460}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85062a496952d4b41aa355baf3e207eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 2
+  fadeDuration: 5
   isDis: 0
